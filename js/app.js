@@ -62,7 +62,7 @@ function show_result(id, _print_layout, callback) {
 
         result = s
         console.log(result)
-        
+
         if (result.refraction == null)
             result.refraction = .14;
 
@@ -74,6 +74,7 @@ function show_result(id, _print_layout, callback) {
             return;
         }
 
+
         result.peaks._foreach(function (p) {
             p.az_mag = p.az - result.declination;
             if (p.az_mag < 0) p.az_mag += 360;
@@ -81,7 +82,19 @@ function show_result(id, _print_layout, callback) {
             if (p.az_true < 0) p.az_true += 360;
         });
 
+        result.peaks.sort((a, b) => a.az_mag - b.az_mag);
+
         result.peaks = result.peaks.concat(result.peaks)
+
+        result.peaks._foreach(function (p, i) {
+            if (i > (result.peaks.length / 2)) {
+                p.az = p.az + 360
+                p.az_true = p.az_true + 360
+                p.az_mag = p.az_mag + 360
+
+            }
+        });
+
 
         $("viewname").innerText = result.name
 
@@ -133,15 +146,15 @@ function set_slice(az) {
     for (p = 0; p < peaks.length && peaks[p].az < current.slice; p++);
     console.log(p)
     if (p == peaks.length || peaks[p].az >= last_az) {
-        console.log(p+"-")
+        console.log(p + "-")
         current.slice_first_peak = -1;
         current.slice_last_peak = -1;
     } else {
-        console.log(p+"+")
+        console.log(p + "+")
         current.slice_first_peak = p;
         for (; p < peaks.length && peaks[p].az < last_az; p++);
         current.slice_last_peak = p - 1;
-        console.log(p-1+"++")
+        console.log(p - 1 + "++")
 
     }
 
@@ -315,7 +328,7 @@ function longpress_action(param) {
             break;
         case "0":
             show_result(String.toUpperCase(prompt("Enter heywhatsthat.com Panorama ID")), false)
-        break;
+            break;
         default:
             break;
     }
