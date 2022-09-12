@@ -1,0 +1,24 @@
+{
+  "version": "1", 
+  "name": "HeyWhatsThat",
+  "description": "",
+  "launch_path": "/index.html",
+  "fullscreen": true,
+  "icons": {
+    "112": "/assets/icon.png"
+  },
+  "developer": {
+    "name": "Delta Applications",
+    "url": "https://github.com/Delta-Applications/"
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "default_locale": "en",
+  "type": "certified",
+  "permissions": {
+    "systemXHR": {
+      "description": "Update using data connection."
+    }
+  }
+}
