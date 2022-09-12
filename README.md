@@ -6,7 +6,9 @@ HeyWhatsThat Client for KaiOS
 - View ID QR Code Insertion
 - View Panorama with D-PAD https://www.heywhatsthat.com/results/{ViewID}/image_j.png 
 - Request Panorama Creation for Current Location
+- Request Random Popular Panorama
 - View Point Coverage (w/ Leaflet?)
+- View all peaks in Panorama
 
 
 ## What's HeyWhatsThat?

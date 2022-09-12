@@ -306,7 +306,6 @@ const longpress_timespan = 1000;
 let timeout;
 
 function longpress_action(param) {
-    console.log(param)
     switch (param.key) {
         case "ArrowLeft":
             scroll_left()
@@ -314,13 +313,15 @@ function longpress_action(param) {
         case "ArrowRight":
             scroll_right()
             break;
+        case "0":
+            view_info(String.toUpperCase(confirm("Enter heywhatsthat.com Panorama ID")), false)
+        break;
         default:
             break;
     }
 }
 
 function shortpress_action(param) {
-    console.log(param)
     switch (param.key) {
         case "ArrowLeft":
             go_left()
@@ -334,7 +335,6 @@ function shortpress_action(param) {
 }
 
 function repeat_action(param) {
-    console.log(param)
     switch (param.key) {
         case "ArrowLeft":
             go_left()
