@@ -314,7 +314,7 @@ function longpress_action(param) {
             scroll_right()
             break;
         case "0":
-            view_info(String.toUpperCase(confirm("Enter heywhatsthat.com Panorama ID")), false)
+            show_result(String.toUpperCase(prompt("Enter heywhatsthat.com Panorama ID")), false)
         break;
         default:
             break;
