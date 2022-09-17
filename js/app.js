@@ -405,7 +405,7 @@ function handleKeyUp(evt) {
     }
 }
 
-show_result("JFT8X46T", false)
+show_result("LIGBSG5C", false) // OSGB Station Panorama Demo
 
 document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);
