@@ -20,7 +20,7 @@ var current = {
     slice: 0,
     slice_first_peak: -1,
     slice_last_peak: -1,
-    slice_width: 144,
+    slice_width: window.screen.width * 360 / 800, // 240
     swing: 0,
     units: 0,
     use_metric: 0,
@@ -84,16 +84,33 @@ function show_result(id, _print_layout, callback) {
 
         result.peaks.sort((a, b) => a.az_mag - b.az_mag);
 
-        result.peaks = result.peaks.concat(result.peaks)
-
-        result.peaks._foreach(function (p, i) {
-            if (i > (result.peaks.length / 2)) {
-                p.az = p.az + 360
-                p.az_true = p.az_true + 360
-                p.az_mag = p.az_mag + 360
-
+        var newp = []
+     
+        for (let i = 0; i < (result.peaks.length * 2); i++) {
+            var newobj = JSON.parse(JSON.stringify(result.peaks[i % result.peaks.length]))
+            if (i >= result.peaks.length) {
+                console.log(i)
+                newobj.az += 360
+                newobj.az_true += 360
+                newobj.az_mag += 360
             }
-        });
+            newp.push(newobj)
+        } 
+
+        result.peaks = newp
+
+        /*result.peaks._foreach(function (p, i) {
+            if (i > (result.peaks.length / 2)) {
+                console.log(i, p.name)
+                
+            } else {
+                console.log(i, p.az_mag)
+                if ((p.az_mag - 360) > 0) { // If az is higher than 360, and it's detractable, remove 360 when it isn't a duplicate
+                    p.az_mag -= 360
+                    console.log(i, p.name)
+                }
+            }
+        });*/
 
 
         $("viewname").innerText = result.name
@@ -143,16 +160,16 @@ function set_slice(az) {
     var last_az = current.slice + current.slice_width;
     var p;
     var peaks = result.peaks
-    for (p = 0; p < peaks.length && peaks[p].az < current.slice; p++);
+    for (p = 0; p < peaks.length && peaks[p].az_mag < current.slice; p++);
     console.log(p)
-    if (p == peaks.length || peaks[p].az >= last_az) {
+    if (p == peaks.length || peaks[p].az_mag >= last_az) {
         console.log(p + "-")
         current.slice_first_peak = -1;
         current.slice_last_peak = -1;
     } else {
         console.log(p + "+")
         current.slice_first_peak = p;
-        for (; p < peaks.length && peaks[p].az < last_az; p++);
+        for (; p < peaks.length && peaks[p].az_mag < last_az; p++);
         current.slice_last_peak = p - 1;
         console.log(p - 1 + "++")
 
@@ -202,12 +219,12 @@ function pretty_az(x, is_html) {
 }
 
 function set_peak_text(p) {
-    $("peak_name").innerHTML = pretty_az(p.az, 1) + " " + p.name
-    $("peak_subtext").innerText = Math.round(p.range) + 'km ' + (p.ok_elev ? Math.round(p.ok_elev) + 'm' : '')
+    $("peak_name").innerHTML = pretty_az(p.az_mag, 1) + " " + p.name
+    $("peak_subtext").innerText = Math.round(p.range) + 'km ' + (p.elev ? Math.round(p.elev) + 'm' : '')
 }
 
 function set_peak_text_az_only(az) {
-    $("peak_subtext").innerText = "Bearing " + pretty_az(p.az, 1)
+    $("peak_subtext").innerText = "Bearing " + pretty_az(p.az_mag, 1)
 }
 
 function set_peak_text_no_peaks() {
@@ -230,7 +247,7 @@ function set_peak(p) {
         current.peak = p;
         var pp = result.peaks[p];
         set_peak_text(pp);
-        set_mark(pp.az);
+        set_mark(pp.az_mag);
         //highlight_peak_row();
     }
 }
@@ -244,7 +261,7 @@ function first_going_right() {
         return -1;
     var lastp = current.slice_last_peak;
     var az = current.slice - current.az_advance_per_click + current.slice_width;
-    for (; p < lastp && result.peaks[p].az < az; p++);
+    for (; p < lastp && result.peaks[p].az_mag < az; p++);
     return p;
 }
 
@@ -257,7 +274,7 @@ function first_going_left() {
         return -1;
     var firstp = current.slice_first_peak;
     var az = current.slice + current.az_advance_per_click;
-    for (; p > firstp && result.peaks[p].az >= az; p--);
+    for (; p > firstp && result.peaks[p].az_mag >= az; p--);
     return p;
 }
 
@@ -269,14 +286,14 @@ function nearest_to_az(az) {
     var p = current.slice_first_peak;
     if (p == -1)
         return -1;
-    if (result.peaks[p].az >= az)
+    if (result.peaks[p].az_mag >= az)
         return p;
     var lastp = current.slice_last_peak;
-    if (result.peaks[lastp].az <= az)
+    if (result.peaks[lastp].az_mag <= az)
         return lastp;
-    for (; p < lastp && result.peaks[p].az < az; p++);
+    for (; p < lastp && result.peaks[p].az_mag < az; p++);
     // is previous peak closer?
-    if (az - result.peaks[p - 1].az < result.peaks[p].az - az)
+    if (az - result.peaks[p - 1].az_mag < result.peaks[p].az_mag - az)
         p--;
     return p;
 }
