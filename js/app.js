@@ -63,6 +63,8 @@ function show_result(id, _print_layout, callback) {
         result = s
         console.log(result)
 
+        localStorage.setItem("last_view", id)
+
         if (result.refraction == null)
             result.refraction = .14;
 
@@ -85,7 +87,7 @@ function show_result(id, _print_layout, callback) {
         result.peaks.sort((a, b) => a.az_mag - b.az_mag);
 
         var newp = []
-     
+
         for (let i = 0; i < (result.peaks.length * 2); i++) {
             var newobj = JSON.parse(JSON.stringify(result.peaks[i % result.peaks.length]))
             if (i >= result.peaks.length) {
@@ -95,7 +97,7 @@ function show_result(id, _print_layout, callback) {
                 newobj.az_mag += 360
             }
             newp.push(newobj)
-        } 
+        }
 
         result.peaks = newp
 
@@ -331,6 +333,91 @@ function scroll_left() {
 ////shortpress / longpress logic
 ////////////////////////////////
 
+function isHidden(el) {
+    return (el.offsetParent === null)
+}
+
+let tabIndex = 0;
+
+function setTab() {
+    //set tabindex
+    let t = -1;
+    let items = document.querySelectorAll(".item");
+    let items_list = [];
+    for (let i = 0; i < items.length; i++) {
+        if (!isHidden(items[i])) {//(items[i].parentNode.style.display =! "none") {
+            items_list.push(items[i]);
+            t++;
+            items_list[items_list.length - 1].setAttribute("tabIndex", t);
+            items_list[0].focus();
+        }
+    }
+    //items_list[0].focus();
+
+    //	document.querySelector("div#finder").style.display = "block";
+
+
+}
+
+
+
+function nav(move) {
+    //get items from current pannel
+    let items = document.querySelectorAll(".item");
+    let items_list = [];
+    for (let i = 0; i < items.length; i++) {
+        //if (items[i].style.display == "none") continue;
+        //if (items[i].parentNode.style.display == "none") continue;
+        if (isHidden(items[i])) continue;
+        items_list.push(items[i]);
+    }
+
+
+
+    if (move == "+1") {
+        if (tabIndex < items_list.length - 1) {
+            tabIndex++;
+            items_list[tabIndex].focus();
+        } else {
+            tabIndex = 0;
+            items_list[tabIndex].focus();
+        }
+    }
+
+    if (move == "-1") {
+        if (tabIndex > 0) {
+            tabIndex--;
+            items_list[tabIndex].focus();
+        } else {
+            tabIndex = items_list.length - 1
+            items_list[tabIndex].focus();
+
+        }
+    }
+
+    const rect = document.activeElement.getBoundingClientRect();
+    const elY =
+        rect.top - document.body.getBoundingClientRect().top + rect.height / 2;
+
+    document.activeElement.parentNode.scrollBy({
+        left: 0,
+        top: elY - window.innerHeight / 2,
+        behavior: "smooth",
+    });
+
+    /* const rect = document.activeElement.getBoundingClientRect();
+     const elY =
+     rect.top - document.body.getBoundingClientRect().top + rect.height / 2;
+
+     document.activeElement.parentNode.scrollBy({
+       left: 0,
+       top: elY - window.innerHeight / 2,
+       behavior: "smooth",
+     }); */ // I can't get this to work, please someone open a PR if you somehow get this working, thanks! ;)
+
+}
+
+
 let longpress = false;
 const longpress_timespan = 1000;
 let timeout;
@@ -359,6 +446,37 @@ function shortpress_action(param) {
         case "ArrowRight":
             go_right()
             break;
+        case "ArrowUp":
+            nav("-1")
+            break;
+        case "ArrowDown":
+            nav("+1")
+            break;
+        case "SoftRight":
+            setTab()
+            $("menu").style.display = "block";
+            break;
+        case "Enter":
+
+            switch (document.activeElement.getAttribute("data-map")) {
+                case "about":
+                    $("menu_page").style.display = "none";
+                    $("about_page").style.display = "block";
+                    break;
+            }
+
+            break;
+        case "Backspace":
+            if ($("menu").style.display == "block" && $("menu_page").style.display != "none") $("menu").style.display = "none";
+
+            if ($("menu").style.display == "block" && $("about_page").style.display != "none") {
+                $("menu_page").style.display = "block";
+                $("about_page").style.display = "none";
+            };
+
+            setTab()
+
+            break;
         default:
             break;
     }
@@ -367,10 +485,10 @@ function shortpress_action(param) {
 function repeat_action(param) {
     switch (param.key) {
         case "ArrowLeft":
-            go_left()
+            scroll_left()
             break;
         case "ArrowRight":
-            go_right()
+            scroll_right()
             break;
         default:
             break;
@@ -380,8 +498,9 @@ function repeat_action(param) {
 
 function handleKeyDown(evt) {
 
-    if (evt.key == "EndCall") evt.preventDefault();
+    //if (evt.key == "EndCall") evt.preventDefault();
     if (evt.key === 'MicrophoneToggle') evt.preventDefault();
+    if (evt.key == "Backspace") evt.preventDefault(); // Disable close app by holding backspace
     if (!evt.repeat) {
         longpress = false;
         timeout = setTimeout(() => {
@@ -405,7 +524,7 @@ function handleKeyUp(evt) {
     }
 }
 
-show_result("LIGBSG5C", false) // OSGB Station Panorama Demo
+show_result(localStorage.getItem("last_view") || "LIGBSG5C", false) // OSGB Station Panorama Demo
 
 document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);

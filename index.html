@@ -1,30 +1,78 @@
 <head>
     <link rel="stylesheet" href="css/kaios-native-ui.css" />
 </head>
+
 <body style="overflow: hidden;">
     <div id="app">
-        <div class="header" id="viewname">header</div>
-        <div class="toast">This is a toast message</div>
-        <div id="content">
-            <div id="sil_div" onclick="find_peak_on_pan(event.clientX)" style="height: 160px; width: 320px; top: 0px; overflow: hidden; position: relative;">
-                <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_in_left" style="position: absolute; top: 0px; display: block; left: 0px; clip: rect(0px, 320px, 160px, 0px);">
-                <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_in_right" style="position: absolute; top: 0px; left: 800px; display: block; clip: rect(0px, 0px, 160px, 0px);">
-                <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_out_left" style="position: absolute; top: 48px; left: 0px; display: none; clip: rect(0px,320px,64px,0px)" height="64" width="320">
-                <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_out_right" style="position: absolute; top: 48px; left: 320px; display: none; clip: rect(0px,0px,64px,0px)" height="64" width="320">
-                <div id="silmarker" style="position:absolute; display:none; top:0px; width:1px; background-color:#8B6914; height:160px"></div>
+        <div id="menu" class="map_overlay" style="display: none;">
+            <div id="about_page" class="tracking_container" style="display: none;">
+                <div class="options_header">About
+                </div>
+                <div id="about-list" class="options_list">
+                    <div style="display: block; white-space: normal; line-height: unset; height: unset;" class="item options_item" tabindex="0">
+                        <div style="word-break: break-word; width: 220px; text-overflow: unset; white-space: unset; height: auto; line-height: unset;" class="options_label">
+You hike to the top of a mountain or pull off at a scenic overlook. You see mountains in the distance.  Which mountains are they?</div>
+                    </div>
+                    <div style="display: block; white-space: normal; line-height: unset; height: unset;" class="item options_item" tabindex="0">
+                        <div style="word-break: break-word; width: 220px; text-overflow: unset; white-space: unset; height: auto; line-height: unset;" class="options_label">
+HeyWhatsThat will tell you, providing a 360° panoramic sketch labeled with the names of the peaks you're looking at.  From almost anywhere in the world.
+</div>
+                    </div>
+                </div>
             </div>
-            <div class="list-item focusable" tabindex="0">
-                <p class="list-item__text" id="peak_name"></p>
-                <p class="list-item__subtext" id="peak_subtext">secondary List</p>
+            <div id="menu_page" class="tracking_container">
+                <div class="options_header"><img style="position: absolute; height: 28px; left: 50px; top: 3px;"
+                        src="assets/hwt-logo-293-58.png">
+                </div>
+                <div id="qm-list" class="options_list">
+                    <div class="item options_item" tabindex="0" data-map="my-panoramas">
+                        <div class="options_label">My panoramas</div>
+                    </div>
+                    <div class="item options_item" tabindex="1" data-map="request-panorama">
+                        <div class="options_label">Request panorama</div>
+                    </div>
+                    <div class="item options_item" tabindex="2" data-map="surprise-me">
+                        <div class="options_label">Surprise me</div>
+                    </div>
+                    <div class="item options_item" tabindex="3" data-map="about">
+                        <div class="options_label">About</div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="softkeys">
-          <div class="softkey softkey-left">left key</div>
-          <div class="softkey softkey-center"></div>
-          <div class="softkey softkey-right">Menu</div>
+        <div id="panoramaview" style="width: 240px; height: 320px;">
+            <div class="header" id="viewname">header</div>
+            <div class="toast">This is a toast message</div>
+            <div id="content">
+                <div id="sil_div" onclick="find_peak_on_pan(event.clientX)"
+                    style="height: 160px; width: 320px; top: 0px; overflow: hidden; position: relative;">
+                    <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_in_left"
+                        style="position: absolute; top: 0px; display: block; left: 0px; clip: rect(0px, 320px, 160px, 0px);">
+                    <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_in_right"
+                        style="position: absolute; top: 0px; left: 800px; display: block; clip: rect(0px, 0px, 160px, 0px);">
+                    <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_out_left"
+                        style="position: absolute; top: 48px; left: 0px; display: none; clip: rect(0px,320px,64px,0px)"
+                        height="64" width="320">
+                    <img src="https://www.heywhatsthat.com/results/NL9CCWGC/image_j.png" id="img_out_right"
+                        style="position: absolute; top: 48px; left: 320px; display: none; clip: rect(0px,0px,64px,0px)"
+                        height="64" width="320">
+                    <div id="silmarker"
+                        style="position:absolute; display:none; top:0px; width:1px; background-color:#8B6914; height:160px">
+                    </div>
+                </div>
+                <div class="list-item focusable" tabindex="0">
+                    <p class="list-item__text" id="peak_name"></p>
+                    <p class="list-item__subtext" id="peak_subtext">secondary List</p>
+                </div>
+            </div>
+            <div class="softkeys">
+                <div class="softkey softkey-left">left key</div>
+                <div class="softkey softkey-center"></div>
+                <div class="softkey softkey-right">Menu</div>
+            </div>
         </div>
     </div>
-   
+
 
     <script src="js/hwt_req.js"></script>
     <script src="js/app.js"></script>

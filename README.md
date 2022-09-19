@@ -1,6 +1,7 @@
 ![HeyWhatsThat Logo](http://www.heywhatsthat.com/images/hwt-logo-293-58.jpg)
 # heywhatsthat
 HeyWhatsThat Client for KaiOS
+To input a different panorama ID, hold down 0
 
 ## Planned Features
 - View ID QR Code Insertion
