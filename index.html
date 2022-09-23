@@ -15,9 +15,15 @@ You hike to the top of a mountain or pull off at a scenic overlook. You see moun
                     </div>
                     <div style="display: block; white-space: normal; line-height: unset; height: unset;" class="item options_item" tabindex="0">
                         <div style="word-break: break-word; width: 220px; text-overflow: unset; white-space: unset; height: auto; line-height: unset;" class="options_label">
-HeyWhatsThat will tell you, providing a 360° panoramic sketch labeled with the names of the peaks you're looking at.  From almost anywhere in the world.
+HeyWhatsThat will tell you, providing a 360&#176; panoramic sketch labeled with the names of the peaks you're looking at.  From almost anywhere in the world.
 </div>
                     </div>
+                </div>
+            </div>
+            <div id="peak_list" class="tracking_container" style="display: none;">
+                <div class="options_header">All Peaks
+                </div>
+                <div id="peak-list" class="options_list">
                 </div>
             </div>
             <div id="menu_page" class="tracking_container">
@@ -25,6 +31,13 @@ HeyWhatsThat will tell you, providing a 360° panoramic sketch labeled with the 
                         src="assets/hwt-logo-293-58.png">
                 </div>
                 <div id="qm-list" class="options_list">
+                    <div data-map="peaks" class="item options_item" tabindex="0">
+                        <div class="options_label">All Peaks</div>
+                    </div>
+                    <div data-map="download" class="item options_item" tabindex="0">
+                        <div class="options_label">Download Panorama</div>
+                    </div>
+                    <div id="separator" class="options_item" style="background: rgb(74, 74, 74) none repeat scroll 0% 0%; height: 5px;" tabindex="0"></div>
                     <div class="item options_item" tabindex="0" data-map="my-panoramas">
                         <div class="options_label">My panoramas</div>
                     </div>
@@ -62,13 +75,13 @@ HeyWhatsThat will tell you, providing a 360° panoramic sketch labeled with the 
                 </div>
                 <div class="list-item focusable" tabindex="0">
                     <p class="list-item__text" id="peak_name"></p>
-                    <p class="list-item__subtext" id="peak_subtext">secondary List</p>
+                    <p class="list-item__subtext" id="peak_subtext">Use Left & Right to Navigate</p>
                 </div>
             </div>
             <div class="softkeys">
-                <div class="softkey softkey-left">left key</div>
-                <div class="softkey softkey-center"></div>
-                <div class="softkey softkey-right">Menu</div>
+                <div class="softkey softkey-left" id="LSK">left key</div>
+                <div class="softkey softkey-center" id="CSK"></div>
+                <div class="softkey softkey-right" id="RSK">Menu</div>
             </div>
         </div>
     </div>

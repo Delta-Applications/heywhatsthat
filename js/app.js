@@ -319,6 +319,17 @@ function go_left() {
     }
 }
 
+function goto_peak(p) {
+    if (p == -1 || result.peaks.length == 0)
+	return;
+    if (current.zoom != 0)
+	set_slice(Math.floor(result.peaks[p].az - current.slice_width/2));
+		// did we wrap?
+    if (current.slice > result.peaks[p].az)
+        p += (result.peaks.length / 2);
+    set_peak(p);
+}
+
 function scroll_right() {
     set_slice(current.slice + current.az_advance_per_click);
     set_peak(nearest_center());
@@ -345,11 +356,11 @@ function setTab() {
     let items = document.querySelectorAll(".item");
     let items_list = [];
     for (let i = 0; i < items.length; i++) {
-        if (!isHidden(items[i])) {//(items[i].parentNode.style.display =! "none") {
+        if (!isHidden(items[i])) { //(items[i].parentNode.style.display =! "none") {
             items_list.push(items[i]);
+            items_list[0].focus();
             t++;
             items_list[items_list.length - 1].setAttribute("tabIndex", t);
-            items_list[0].focus();
         }
     }
     //items_list[0].focus();
@@ -453,28 +464,134 @@ function shortpress_action(param) {
             nav("+1")
             break;
         case "SoftRight":
-            setTab()
             $("menu").style.display = "block";
+            $("LSK").innerText = ""; $("CSK").innerText = "SELECT"; $("RSK").innerText = ""; 
+            setTab()
+
             break;
         case "Enter":
+           
+            if (document.activeElement.getAttribute("data-peak")) {
+                    //set_slice(document.activeElement.getAttribute("data-peak"));
+                    goto_peak(Number(document.activeElement.getAttribute("data-peak")));
 
+                    $("menu").style.display = "none"
+                    $("about_page").style.display = "none";
+                    $("peak_list").style.display = "none";
+                    $("menu_page").style.display = "flex";
+
+                    $("LSK").innerText = ""; $("CSK").innerText = ""; $("RSK").innerText = "Menu"; 
+
+                    setTab()
+
+            }
             switch (document.activeElement.getAttribute("data-map")) {
                 case "about":
                     $("menu_page").style.display = "none";
-                    $("about_page").style.display = "block";
+                    $("about_page").style.display = "flex";
+                    $("LSK").innerText = ""; $("CSK").innerText = ""; $("RSK").innerText = ""; 
+                    setTab()
+                    break;
+                case "peaks":
+
+                    $("menu_page").style.display = "none";
+                    $("about_page").style.display = "none";
+
+                    $("peak-list").innerHTML = '';
+
+                    for (let i = 0; i < (result.peaks.length / 2); i++) {
+                        var obj = result.peaks[i]
+
+                        $("peak-list").innerHTML += `<div class="item list-item focusable" tabindex="0" data-peak="${i}"><p class="list-item__text">${pretty_az(obj.az_mag, 1) + " " + obj.name}</p><p class="list-item__subtext">${Math.round(obj.range) + 'km ' + (obj.elev ? Math.round(obj.elev) + 'm' : '')}</p></div>`;
+
+                    }
+
+                    $("peak_list").style.display = "flex";
+                    setTab()
+                    $("LSK").innerText = ""; $("CSK").innerText = "SELECT"; $("RSK").innerText = ""; 
+
+                    break;
+                case "download":
+                    new MozActivity({
+                        name: "view",
+                        data: {
+                            type: "url", // Possibly text/html in future versions
+                            url: "https://www.heywhatsthat.com/results/" + result.id + "/image_j.png"
+                        }
+                    });
+                    /*fetch("https://www.heywhatsthat.com/results/" + result.id + "/image_j.png", {
+                        method: 'GET',
+                        headers: {
+                          'Access-Control-Allow-Origin': '*'
+                        }})
+                    .then(function(response) {
+                      return response.blob()
+                    })
+                    .then(function(blob) {
+                        let link = document.createElement('a');
+                            link.download = "hwt_" + result.id + ".png";
+                            link.href = URL.createObjectURL(blob);
+                            link.dispatchEvent(
+                                new MouseEvent('click', {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    view: window
+                                })
+                            );
+                            setTimeout(5000, () => {
+                                URL.revokeObjectURL(link.href);
+                            });
+                    });
+*/
+                    /*"hwt_" + result.id + ".png"
+                    var img = new Image;
+                    var c = document.createElement("canvas");
+                    var ctx = c.getContext("2d");
+
+                    img.onload = function () {
+                        c.width = this.naturalWidth; // update canvas size to match image
+                        c.height = this.naturalHeight;
+                        ctx.drawImage(this, 0, 0); // draw in image
+                        c.toBlob(function (blob) { // get content as JPEG blob
+                            let link = document.createElement('a');
+                            link.download = "hwt_" + result.id + ".png";
+                            link.href = URL.createObjectURL(blob);
+                            link.dispatchEvent(
+                                new MouseEvent('click', {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    view: window
+                                })
+                            );
+                            setTimeout(5000, () => {
+                                URL.revokeObjectURL(link.href);
+                            });
+                        }, "image/jpeg", 0.75);
+                    };
+                    img.crossOrigin = ""; // if from different origin
+                    img.src = "https://www.heywhatsthat.com/results/" + result.id + "/image_j.png";*/
+
                     break;
             }
 
             break;
         case "Backspace":
-            if ($("menu").style.display == "block" && $("menu_page").style.display != "none") $("menu").style.display = "none";
+            if ($("menu").style.display == "block" && $("menu_page").style.display != "none") {
 
-            if ($("menu").style.display == "block" && $("about_page").style.display != "none") {
-                $("menu_page").style.display = "block";
-                $("about_page").style.display = "none";
+                $("menu").style.display = "none"
+                $("LSK").innerText = ""; $("CSK").innerText = ""; $("RSK").innerText = "Menu"; 
+
             };
 
-            setTab()
+            if ($("menu").style.display == "block" && ($("about_page").style.display != "none" || $("peak_list").style.display != "none")) {
+                $("menu_page").style.display = "flex";
+                $("about_page").style.display = "none";
+                $("peak_list").style.display = "none";
+                $("LSK").innerText = ""; $("CSK").innerText = "SELECT"; $("RSK").innerText = ""; 
+
+                setTab()
+            };
+
 
             break;
         default:
