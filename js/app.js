@@ -323,9 +323,9 @@ function goto_peak(p) {
     if (p == -1 || result.peaks.length == 0)
 	return;
     if (current.zoom != 0)
-	set_slice(Math.floor(result.peaks[p].az - current.slice_width/2));
+	set_slice(Math.floor(result.peaks[p].az_mag - current.slice_width/2));
 		// did we wrap?
-    if (current.slice > result.peaks[p].az)
+    if (current.slice > result.peaks[p].az_mag)
         p += (result.peaks.length / 2);
     set_peak(p);
 }
@@ -490,6 +490,7 @@ function shortpress_action(param) {
                     $("menu_page").style.display = "none";
                     $("about_page").style.display = "flex";
                     $("LSK").innerText = ""; $("CSK").innerText = ""; $("RSK").innerText = ""; 
+                    tabIndex = 0;
                     setTab()
                     break;
                 case "peaks":
@@ -507,6 +508,7 @@ function shortpress_action(param) {
                     }
 
                     $("peak_list").style.display = "flex";
+                    tabIndex = 0;
                     setTab()
                     $("LSK").innerText = ""; $("CSK").innerText = "SELECT"; $("RSK").innerText = ""; 
 
@@ -588,7 +590,7 @@ function shortpress_action(param) {
                 $("about_page").style.display = "none";
                 $("peak_list").style.display = "none";
                 $("LSK").innerText = ""; $("CSK").innerText = "SELECT"; $("RSK").innerText = ""; 
-
+                tabIndex = 0;
                 setTab()
             };
 
